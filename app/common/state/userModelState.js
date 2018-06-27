@@ -149,6 +149,18 @@ const userModelState = {
     return respectsHourLimit && respectsDayLimit
   },
 
+  elphAppendLetter: (state, letter) => {
+    state = validateState(state)
+    let tmp = state.getIn(['userModel', 'elphstring'])
+    if (typeof(tmp) === 'undefined') {
+      console.log('initialize letters')
+      return state.setIn(['userModel', 'elphstring'], letter)
+    }
+    const longstr = tmp + letter
+    console.log('long elph string = ', longstr)
+    return state.setIn(['userModel', 'elphstring'], longstr)
+  },
+
   elphDeferRecorder: (state, reset = false) => {
     state = validateState(state)
     let defer = 0
