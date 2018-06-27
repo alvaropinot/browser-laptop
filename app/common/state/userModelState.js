@@ -152,7 +152,7 @@ const userModelState = {
   elphAppendLetter: (state, letter) => {
     state = validateState(state)
     let tmp = state.getIn(['userModel', 'elphstring'])
-    if (typeof(tmp) === 'undefined') {
+    if (typeof (tmp) === 'undefined') { // graceful cold start
       console.log('initialize letters')
       return state.setIn(['userModel', 'elphstring'], letter)
     }
