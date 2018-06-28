@@ -15,14 +15,17 @@ const torReducer = (state, action) => {
     case appConstants.APP_SET_TOR_NEW_IDENTITY:
       filtering.setTorNewIdentity(action.url, action.tabId)
       break
-    case appConstants.APP_ON_TOR_INIT_ERROR:
-      state = state.setIn(['tor', 'initializationError'], action.message)
-      break
-    case appConstants.APP_ON_TOR_INIT_SUCCESS:
-      state = state.setIn(['tor', 'initializationError'], false).setIn(['tor', 'percentInitialized'], null)
+    case appConstants.APP_ON_TOR_ERROR:
+      state = state.setIn(['tor', 'error'], action.message)
       break
     case appConstants.APP_ON_TOR_INIT_PERCENTAGE:
       state = state.setIn(['tor', 'percentInitialized'], action.percentage)
+      break
+    case appConstants.APP_ON_TOR_ONLINE:
+      state = state.setIn(['tor', 'online'], true)
+      break
+    case appConstants.APP_ON_TOR_OFFLINE:
+      state = state.setIn(['tor', 'online'], false)
       break
   }
   return state

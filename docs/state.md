@@ -609,7 +609,7 @@ AppStore
   },
   tor: {
     percentInitialized: number, // percentage initialized
-    initializationError: string|boolean, // error message. false means successfully initialized.
+    error: string, // error message. null means no error.
   },
   updates: {
     lastCheckTimestamp: boolean,
