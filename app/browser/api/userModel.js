@@ -307,15 +307,16 @@ const updateTimingModel = (state, special = 'invalid') => {
   if (special === 'invalid') {
     letter = stateToLetterStd(state)
   } else if (special.length === 1) {
-//    console.log('state noget enter;'  + special)
     letter = special
   } // anything else is an error
   let mdl = userModelState.getUserModelTimingMdl(state, true)
   if (mdl.length === 0) {
-    mdl = elph.initOnlineELPH() // TODO init with useful Hspace
+    mdl = elph.initOnlineELPH() // next init with useful Hspace
+    mdl = elph.setBulkELPH('988%(((((8888z8z9998888z888z8889&%((#####<<<=z59&&)$$$)z(())9999y988%&))%(((((((z8999999y', mdl)
   }
   mdl = elph.updateOnlineELPH(letter, mdl)
-//   console.log('letter is ' + letter)
+  console.log('letter is ' + letter)
+  state = userModelState.elphAppendLetter(state, letter)
   return userModelState.setUserModelTimingMdl(state, mdl)
 }
 
@@ -326,7 +327,7 @@ const stateToLetterStd = (state) => {
 //  let buy = shp || userModelState.getUserBuyingState(state) // this is broken
   let rec = recencyCalc(state)
   let freq = frequencyCalc(state)
-//  console.log("calc rec  " + rec + " search= " + sch + " tvar = " + tvar +  " shop "+ shp +  " since search " + freq + " alphabetizing")
+  console.log('calc rec  ' + rec + ', search= ' + sch + ', tvar = ' + tvar + ', shop ' + shp + ', since search ' + freq)
   let letter = elph.alphabetizer(tvar, sch, shp, false, false, freq, rec) // one more for buy perhaps, or xor
   return letter
 }
@@ -336,16 +337,16 @@ const stateToLetterStd = (state) => {
 //   let defers = userModelState.elphDeferRemember(state)
 //   let out = false
 //   // magic number needs accounting for -SCL
-//   if (defers > 8 ) {
+//   if (defers > 4) {
 //     out = true
 //   } else {
-//     let pred = elph.dealphabet( elph.predictOnlineELPH(mdl) )
-//     switch(pred) {
+//     let pred = elph.dealphabet(elph.predictOnlineELPH(mdl))
+//     switch (pred) {
 //       case 'servead' :
 //         out = true
 //         break
 //       case 'clickad':
-//         out =  true
+//         out = true
 //         break
 //       default :
 //         out = false
@@ -382,9 +383,9 @@ const topicVariance = (state) => { // this is a fairly random function; would ha
   return valueToLowHigh(varval, 2.5) // 2.5 needs to be changed for ANY algo change here
 }
 
-const recencyCalc = (state) => { // using unidle time here; might be better to pick something else
+const recencyCalc = (state) => { // was using unidle time here; switched to last shopping time
   let now = new Date().getTime()
-  let diff = (now - userModelState.getLastUserIdleStopTime(state)) / 1000 // milliseconds
+  let diff = (now - userModelState.getLastShoppingTime(state)) / 1000 // milliseconds
   return valueToLowHigh(diff, 600) // shorter than 10 minutes from idle
 }
 
@@ -403,15 +404,13 @@ const valueToLowHigh = (x, thresh) => {
 const testShoppingData = (state, url) => {
   if (noop(state)) return state
   const hostname = urlParse(url).hostname
-  const lastShopState = userModelState.getSearchState(state)
+  const lastShopState = userModelState.getShoppingState(state)
   if (hostname === 'www.amazon.com') {
     const score = 1.0   // eventually this will be more sophisticated than if(), but amazon is always a shopping destination
-
     state = userModelState.flagShoppingState(state, url, score)
-  } else if (hostname !== 'www.amazon.com' && lastShopState) {
+  } else if (hostname !== 'www.amazon.com' && lastShopState) { // do we need lastShopState? assumes amazon queries hostname changes
     state = userModelState.unFlagShoppingState(state)
   }
-
   return state
 }
 
@@ -539,6 +538,7 @@ const checkReadyAdServe = (state, windowId) => {  // around here is where you wi
   // }
   // let reset = true
   // state = userModelState.elphDeferRecorder(state, reset) // reset deferral counter
+
   const surveys = userModelState.getUserSurveyQueue(state).toJS()
   const survey = underscore.findWhere(surveys, { status: 'available' })
   if (survey) {
