@@ -610,6 +610,7 @@ AppStore
   tor: {
     percentInitialized: number, // percentage initialized
     error: string, // error message. null means no error.
+    online: boolean, // true if tor is online, false if not
   },
   updates: {
     lastCheckTimestamp: boolean,
