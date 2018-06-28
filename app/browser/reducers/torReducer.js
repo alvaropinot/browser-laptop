@@ -16,6 +16,7 @@ const torReducer = (state, action) => {
       filtering.setTorNewIdentity(action.url, action.tabId)
       break
     case appConstants.APP_ON_TOR_ERROR:
+      state = state.setIn(['tor', 'online'], false)
       state = state.setIn(['tor', 'error'], action.message)
       break
     case appConstants.APP_ON_TOR_INIT_PERCENTAGE:
@@ -23,6 +24,9 @@ const torReducer = (state, action) => {
       break
     case appConstants.APP_ON_TOR_ONLINE:
       state = state.setIn(['tor', 'online'], action.online)
+      if (action.online) {
+        state = state.setIn(['tor', 'error'], null)
+      }
       break
   }
   return state

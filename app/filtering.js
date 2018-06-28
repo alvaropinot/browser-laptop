@@ -827,15 +827,11 @@ function setupTor () {
   }
   const onTorError = (msg) => {
     initialized()
-    appActions.onTorOffline()   // paranoia
     appActions.onTorError(msg)
     console.warn(`tor error: ${msg}`)
   }
   const onTorOnline = (online) => {
     initialized()
-    if (online) {               // If online, clear error.
-      appActions.onTorError(null)
-    }
     appActions.onTorOnline(online)
   }
   // If Tor has not successfully initialized or thrown an error within 20s,
