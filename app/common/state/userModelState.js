@@ -153,11 +153,9 @@ const userModelState = {
     state = validateState(state)
     let tmp = state.getIn(['userModel', 'elphstring'])
     if (typeof (tmp) === 'undefined') { // graceful cold start
-      console.log('initialize letters')
       return state.setIn(['userModel', 'elphstring'], letter)
     }
     const longstr = tmp + letter
-    console.log('long elph string = ', longstr)
     return state.setIn(['userModel', 'elphstring'], longstr)
   },
 
@@ -246,6 +244,12 @@ const userModelState = {
           .setIn([ 'userModel', 'lastSearchTime' ], new Date().getTime())
   },
 
+  getSearchState: (state) => {
+    state = validateState(state)
+
+    return state.getIn([ 'userModel', 'searchActivity' ])
+  },
+
   getLastSearchTime: (state) => {
     state = validateState(state)
     return state.getIn(['userModel', 'lastSearchTime'])
@@ -263,10 +267,12 @@ const userModelState = {
           .setIn([ 'userModel', 'lastShopTime' ], new Date().getTime())
   },
 
-  getSearchState: (state) => {
+  unFlagShoppingState: (state) => {
+    if (!userModelState.getAdEnabledValue(state)) return state
+
     state = validateState(state)
 
-    return state.getIn([ 'userModel', 'searchActivity' ])
+    return state.setIn([ 'userModel', 'shopActivity' ], false)
   },
 
   getShoppingState: (state) => {
@@ -275,12 +281,10 @@ const userModelState = {
     return state.getIn([ 'userModel', 'shopActivity' ])
   },
 
-  unFlagShoppingState: (state) => {
-    if (!userModelState.getAdEnabledValue(state)) return state
-
+  getLastShoppingTime: (state) => {
     state = validateState(state)
 
-    return state.setIn([ 'userModel', 'shopActivity' ], false)
+    return state.getIn([ 'userModel', 'lastShopTime' ])
   },
 
   flagUserBuyingSomething: (state, url) => {
