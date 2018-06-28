@@ -22,10 +22,7 @@ const torReducer = (state, action) => {
       state = state.setIn(['tor', 'percentInitialized'], action.percentage)
       break
     case appConstants.APP_ON_TOR_ONLINE:
-      state = state.setIn(['tor', 'online'], true)
-      break
-    case appConstants.APP_ON_TOR_OFFLINE:
-      state = state.setIn(['tor', 'online'], false)
+      state = state.setIn(['tor', 'online'], action.online)
       break
   }
   return state

@@ -831,15 +831,12 @@ function setupTor () {
     appActions.onTorError(msg)
     console.warn(`tor error: ${msg}`)
   }
-  const onTorOnline = () => {
+  const onTorOnline = (online) => {
     initialized()
-    appActions.onTorError(null) // clear error
-    appActions.onTorOnline()
-  }
-  const onTorOffline = () => {
-    initialized()
-    // preserve error
-    appActions.onTorOffline()
+    if (online) {               // If online, clear error.
+      appActions.onTorError(null)
+    }
+    appActions.onTorOnline(online)
   }
   // If Tor has not successfully initialized or thrown an error within 20s,
   // assume it's broken.
@@ -871,10 +868,10 @@ function setupTor () {
       const networkLiveness = (live) => {
         if (live) {
           // Network is now live.
-          onTorOnline()
+          onTorOnline(true)
         } else if (timer === null) {
           // We were online before; now we are not.
-          onTorOffline()
+          onTorOnline(false)
           // Wait for tor to reconnect.
           setTorErrorOnTimeout(17000, 'Tor could not reconnect.')
         }
@@ -886,10 +883,10 @@ function setupTor () {
         }
         if (established) {
           // Circuit is now established.
-          onTorOnline()
+          onTorOnline(true)
         } else if (timer === null) {
           // We were online before; now we are not.
-          onTorOffline()
+          onTorOnline(false)
           // Wait for tor to reconnect.
           setTorErrorOnTimeout(17000, 'Tor could not reconnect.')
         }

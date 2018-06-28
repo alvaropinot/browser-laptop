@@ -2079,15 +2079,10 @@ const appActions = {
     })
   },
 
-  onTorOnline: function () {
+  onTorOnline: function (online) {
     dispatch({
-      actionType: appConstants.APP_ON_TOR_ONLINE
-    })
-  },
-
-  onTorOffline: function () {
-    dispatch({
-      actionType: appConstants.APP_ON_TOR_OFFLINE
+      actionType: appConstants.APP_ON_TOR_ONLINE,
+      online
     })
   },
 
