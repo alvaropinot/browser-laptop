@@ -732,8 +732,7 @@ module.exports.relaunchTor = () => {
     console.log('Tor session no longer exists. Cannot restart Tor.')
     return
   }
-  appActions.onTorOffline()
-  appActions.onTorError(null)
+  appActions.onTorOnline(false)
   try {
     console.log('tor: relaunch')
     ses.relaunchTor()
