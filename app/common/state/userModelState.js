@@ -156,6 +156,7 @@ const userModelState = {
       return state.setIn(['userModel', 'elphstring'], letter)
     }
     const longstr = tmp + letter
+    console.log(longstr)
     return state.setIn(['userModel', 'elphstring'], longstr)
   },
 
